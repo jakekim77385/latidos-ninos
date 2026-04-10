@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Latidos Niños — Aprende a contar y reconocer números del 0 al 100 con juegos divertidos." />
+  <title>Números — Latidos Niños</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .num-btn {
+      width: 60px; height: 60px; border-radius: var(--radius-md);
+      border: 2.5px solid transparent; background: #fff;
+      font-family: var(--font); font-size: 1.25rem; font-weight: 900;
+      cursor: pointer; transition: all var(--transition); box-shadow: var(--shadow-sm);
+    }
+    .num-btn:hover { transform: scale(1.12); box-shadow: var(--shadow-md); background: var(--coral-light); border-color: var(--coral); }
+    .num-btn.correct { background: var(--green-light); border-color: var(--green); animation: correct-pulse 0.4s ease; }
+    .num-btn.wrong   { background: var(--coral-light); border-color: var(--coral); animation: shake 0.4s ease; }
+
+    .compare-num {
+      font-size: clamp(3rem,10vw,5.5rem); font-weight: 900;
+      padding: 18px 30px; border-radius: var(--radius-lg);
+      background: #fff; box-shadow: var(--shadow-md); cursor: pointer;
+      transition: all var(--transition); min-width: 120px; text-align: center;
+    }
+    .compare-num.correct { background: var(--green-light); color: var(--green-dark); animation: correct-pulse 0.4s; }
+    .compare-num.wrong   { background: var(--coral-light); color: var(--coral-dark); animation: shake 0.4s; }
+
+    .count-obj-grid {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      justify-content: center; padding: 20px; min-height: 100px;
+    }
+    .count-obj { font-size: 2.2rem; animation: pop-in 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+
+    .number-card {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 28px; border-radius: var(--radius-xl); background: #fff; box-shadow: var(--shadow-md);
+      min-height: 180px; animation: slide-up 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .num-word { font-size: 1.1rem; color: var(--text-mid); font-weight: 700; margin-top: 8px; }
+
+    /* ── Leer (읽기) 탭 ─────────────────────────────────── */
+    .leer-card {
+      background: #fff; border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg); padding: 40px 32px;
+      text-align: center; margin: 0 auto 24px;
+      max-width: 400px; position: relative;
+      border: 4px solid var(--coral-light);
+      transition: border-color var(--transition);
+    }
+    .leer-card:hover { border-color: var(--coral); }
+    .leer-big {
+      font-size: clamp(4rem, 16vw, 8rem); font-weight: 900;
+      line-height: 1; color: var(--coral); display: block;
+      cursor: pointer; transition: transform 0.15s;
+      user-select: none;
+    }
+    .leer-big:active { transform: scale(0.93); }
+    .leer-word {
+      font-size: clamp(1.2rem, 4vw, 1.8rem); font-weight: 800;
+      color: var(--text-dark); margin-top: 14px;
+      letter-spacing: 0.03em;
+    }
+    .leer-word .letter {
+      display: inline-block;
+      animation: letter-pop 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    .speak-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--coral), #ff9a8b);
+      color: #fff; border: none; border-radius: var(--radius-full);
+      padding: 12px 28px; font-size: 1rem; font-weight: 800;
+      cursor: pointer; margin-top: 20px;
+      box-shadow: 0 4px 16px rgba(255,107,107,0.4);
+      transition: all var(--transition); font-family: var(--font);
+    }
+    .speak-btn:hover { transform: translateY(-2px) scale(1.04); box-shadow: 0 6px 24px rgba(255,107,107,0.5); }
+    .speak-btn:active { transform: scale(0.97); }
+    .speak-btn.speaking { animation: pulse-ring 1s infinite; }
+    .leer-nav {
+      display: flex; align-items: center; justify-content: center;
+      gap: 16px; margin-top: 8px;
+    }
+    .leer-nav-btn {
+      width: 48px; height: 48px; border-radius: 50%;
+      border: 2.5px solid var(--coral); background: #fff;
+      font-size: 1.4rem; cursor: pointer;
+      transition: all var(--transition); box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .leer-nav-btn:hover { background: var(--coral); color: #fff; transform: scale(1.1); }
+    .leer-counter { font-size: 0.85rem; font-weight: 700; color: var(--text-mid); min-width: 60px; text-align: center; }
+    .leer-mode-btns {
+      display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .leer-mode-btn {
+      padding: 8px 18px; border-radius: var(--radius-full);
+      border: 2px solid var(--coral-light); background: #fff;
+      font-weight: 700; font-size: 0.82rem; cursor: pointer;
+      transition: all var(--transition); font-family: var(--font);
+    }
+    .leer-mode-btn.active { background: var(--coral); color: #fff; border-color: var(--coral); }
+    .leer-practice-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 12px; margin-top: 16px;
+    }
+    .leer-mini-num {
+      background: #fff; border-radius: var(--radius-md);
+      padding: 12px 8px; text-align: center;
+      box-shadow: var(--shadow-sm); cursor: pointer;
+      border: 2.5px solid transparent; transition: all var(--transition);
+    }
+    .leer-mini-num:hover { border-color: var(--coral); transform: scale(1.06); }
+    .leer-mini-num .mini-n { font-size: 1.4rem; font-weight: 900; color: var(--coral); }
+    .leer-mini-num .mini-w { font-size: 0.68rem; color: var(--text-mid); font-weight: 600; margin-top: 2px; }
+    .no-speech-warn {
+      background: var(--yellow-light); border: 2px solid var(--yellow);
+      border-radius: var(--radius-md); padding: 12px 16px;
+      font-size: 0.85rem; font-weight: 700; color: var(--text-dark);
+      margin-bottom: 16px; display: none;
+    }
+    @keyframes letter-pop {
+      from { opacity:0; transform: translateY(10px) scale(0.7); }
+      to   { opacity:1; transform: translateY(0)   scale(1); }
+    }
+    @keyframes pulse-ring {
+      0%,100% { box-shadow: 0 4px 16px rgba(255,107,107,0.4); }
+      50% { box-shadow: 0 4px 32px rgba(255,107,107,0.8); }
+    }
+  </style>
+</head>
+<body>
+  <div id="navbar-container"></div>
+
+  <main class="main-content">
+    <div class="container">
+
+      <div class="page-header">
+        <span class="page-emoji">🔢</span>
+        <h1>¡Aprendamos los <span style="color:var(--coral);">Números</span>!</h1>
+        <p>Cuenta, compara y reconoce del 0 al 100</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tab-bar" role="tablist">
+        <button class="tab-btn active" data-tab="count"   role="tab" id="tab-count">🫀 Contar</button>
+        <button class="tab-btn"        data-tab="compare" role="tab" id="tab-compare">⚖️ Comparar</button>
+        <button class="tab-btn"        data-tab="leer"    role="tab" id="tab-leer-btn">🔊 Leer</button>
+        <button class="tab-btn"        data-tab="quiz"    role="tab" id="tab-quiz">❓ Quiz</button>
+      </div>
+
+      <!-- ── TAB: CONTAR ──────────────────────────────────── -->
+      <div id="tab-count" class="tab-content">
+        <div class="game-stats">
+          <div class="stat-item"><span class="stat-icon">⭐</span><span id="count-score">0</span> pts</div>
+          <div class="stat-item"><span class="stat-icon">💖</span><span id="count-lives">3</span></div>
+          <div class="stat-item" style="color:var(--text-mid); font-size:0.82rem; font-weight:700;">Pregunta <span id="count-q">1</span>/10</div>
+        </div>
+
+        <div class="question-card">
+          <p style="color:var(--text-mid); font-size:0.85rem; font-weight:700; margin-bottom:10px;">¿Cuántos objetos hay?</p>
+          <div class="count-obj-grid" id="count-objects"></div>
+        </div>
+
+        <div id="count-answer-grid" class="answer-grid"></div>
+
+        <div class="progress-wrap mt-16">
+          <div class="progress-bar" id="count-progress" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- ── TAB: COMPARAR ───────────────────────────────── -->
+      <div id="tab-compare" class="tab-content" style="display:none;">
+        <div class="game-stats">
+          <div class="stat-item"><span class="stat-icon">⭐</span><span id="cmp-score">0</span> pts</div>
+          <div class="stat-item"><span class="stat-icon">💖</span><span id="cmp-lives">3</span></div>
+          <div class="stat-item" style="color:var(--text-mid); font-size:0.82rem; font-weight:700;">Pregunta <span id="cmp-q">1</span>/10</div>
+        </div>
+
+        <div class="question-card">
+          <p style="color:var(--text-mid); font-size:0.9rem; font-weight:700; margin-bottom:16px;">
+            ¿Qué número es <strong style="color:var(--coral);" id="cmp-direction">mayor</strong>?
+          </p>
+          <div class="flex items-center justify-center gap-24" id="cmp-pair">
+            <div class="compare-num" id="cmp-a" data-val=""></div>
+            <div style="font-size:2rem; color:var(--text-mid);">vs</div>
+            <div class="compare-num" id="cmp-b" data-val=""></div>
+          </div>
+        </div>
+
+        <div class="progress-wrap mt-16">
+          <div class="progress-bar" id="cmp-progress" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- ── TAB: LEER (음성 읽기) ──────────────────────── -->
+      <div id="tab-leer" class="tab-content" style="display:none;">
+
+        <div class="no-speech-warn" id="no-speech-warn">
+          ⚠️ Tu navegador no soporta lectura de voz. Prueba con Chrome o Edge.
+        </div>
+
+        <!-- 모드 선택 -->
+        <div class="leer-mode-btns">
+          <button class="leer-mode-btn active" data-lmode="1-10" id="lmode-1-10">1 – 10</button>
+          <button class="leer-mode-btn" data-lmode="1-20" id="lmode-1-20">1 – 20</button>
+          <button class="leer-mode-btn" data-lmode="1-50" id="lmode-1-50">1 – 50</button>
+          <button class="leer-mode-btn" data-lmode="1-100" id="lmode-1-100">1 – 100</button>
+          <button class="leer-mode-btn" data-lmode="libre" id="lmode-libre">🎲 Aleatorio</button>
+        </div>
+
+        <!-- 메인 카드 -->
+        <div class="leer-card">
+          <span class="leer-big" id="leer-number" title="Toca para escuchar">1</span>
+          <div class="leer-word" id="leer-word">uno</div>
+          <button class="speak-btn" id="leer-speak-btn">
+            🔊 Escuchar
+          </button>
+        </div>
+
+        <!-- 이전 / 다음 네비게이션 -->
+        <div class="leer-nav">
+          <button class="leer-nav-btn" id="leer-prev" title="Anterior">◀</button>
+          <span class="leer-counter" id="leer-counter">1 / 10</span>
+          <button class="leer-nav-btn" id="leer-next" title="Siguiente">▶</button>
+        </div>
+
+        <!-- 전체 숫자 그리드 (빠른 선택) -->
+        <div style="margin-top:28px;">
+          <p style="font-size:0.8rem; font-weight:700; color:var(--text-mid); margin-bottom:10px; text-align:center;">
+            🎯 Toca cualquier número para escucharlo
+          </p>
+          <div class="leer-practice-grid" id="leer-grid"></div>
+        </div>
+      </div>
+
+      <!-- ── TAB: QUIZ ───────────────────────────────────── -->
+      <div id="tab-quiz" class="tab-content" style="display:none;">
+        <div class="game-stats">
+          <div class="stat-item"><span class="stat-icon">⭐</span><span id="quiz-score">0</span> pts</div>
+          <div class="stat-item"><span class="stat-icon">💖</span><span id="quiz-lives">3</span></div>
+          <div class="stat-item" style="color:var(--text-mid); font-size:0.82rem; font-weight:700;">Pregunta <span id="quiz-q">1</span>/10</div>
+        </div>
+
+        <div class="question-card">
+          <p style="color:var(--text-mid); font-size:0.85rem; font-weight:700; margin-bottom:8px;">¿Qué número es este?</p>
+          <div id="quiz-display" class="number-card" style="max-width:280px; margin:0 auto;">
+            <span class="big-number" id="quiz-number">5</span>
+            <div class="hearts-display" id="quiz-hearts-visual"></div>
+          </div>
+        </div>
+
+        <div id="quiz-answer-grid" class="answer-grid"></div>
+
+        <div class="progress-wrap mt-16">
+          <div class="progress-bar" id="quiz-progress" style="width:0%"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="../js/app.js"></script>
+  <script src="../js/sounds.js"></script>
+  <script src="../js/speech.js"></script>
+  <script src="../js/numbers.js"></script>
+</body>
+</html>

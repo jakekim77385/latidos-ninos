@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Latidos Niños — Aprende matemáticas con juegos divertidos. Plataforma educativa para niños en Panamá." />
+  <title>Latidos Niños — ¡Aprende Matemáticas!</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* ── Home-only styles ─────────────────────────────── */
+    .hero-section { text-align: center; padding: 12px 0 28px; }
+    .hero-tagline  { font-size: clamp(0.9rem,2vw,1.05rem); color: var(--text-mid); font-weight: 600; margin-top: 8px; }
+
+    /* Profile selector */
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 16px; margin: 24px 0 32px;
+    }
+    .profile-card {
+      position: relative;
+      background: #fff; border-radius: var(--radius-xl);
+      padding: 22px 14px 18px; text-align: center;
+      box-shadow: var(--shadow-md); border: 3px solid transparent;
+      cursor: pointer; transition: all var(--transition);
+    }
+    .profile-card:hover { transform: translateY(-5px) scale(1.03); box-shadow: var(--shadow-lg); border-color: var(--coral-light); }
+    .profile-card .p-avatar { font-size: 3rem; display: block; margin-bottom: 8px; }
+    .profile-card .p-name   { font-size: 1rem; font-weight: 900; color: var(--text-dark); }
+    .profile-card .p-hearts { font-size: 0.75rem; color: var(--text-mid); font-weight: 700; margin-top: 4px; }
+    .profile-card .p-delete {
+      position: absolute; top: 8px; right: 10px;
+      background: none; border: none; font-size: 1rem;
+      cursor: pointer; color: var(--text-light); line-height: 1;
+      padding: 2px 4px; border-radius: 50%;
+      transition: all var(--transition-fast);
+    }
+    .profile-card .p-delete:hover { color: var(--coral); background: var(--coral-light); }
+    .add-profile-card {
+      background: var(--coral-light); border-radius: var(--radius-xl);
+      padding: 22px 14px 18px; text-align: center;
+      box-shadow: var(--shadow-sm); border: 3px dashed var(--coral);
+      cursor: pointer; transition: all var(--transition);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    }
+    .add-profile-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); background: var(--coral); color: #fff; }
+    .add-profile-card:hover .add-icon, .add-profile-card:hover .add-label { color: #fff; }
+    .add-icon  { font-size: 2.6rem; color: var(--coral); }
+    .add-label { font-size: 0.9rem; font-weight: 800; color: var(--coral); }
+
+    /* Player bar */
+    .player-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #fff; border-radius: var(--radius-lg);
+      padding: 14px 20px; box-shadow: var(--shadow-md);
+      margin-bottom: 28px; gap: 12px;
+    }
+    .player-avatar { font-size: 2.6rem; animation: float 2.2s ease-in-out infinite; }
+    .xp-track { background: rgba(0,0,0,0.06); border-radius: var(--radius-full); height: 8px; width: 120px; overflow: hidden; margin-top: 5px; }
+    .xp-fill  { height: 100%; border-radius: var(--radius-full); background: linear-gradient(90deg,var(--coral),var(--yellow)); transition: width 0.8s cubic-bezier(0.34,1.56,0.64,1); }
+    .daily-mission {
+      background: linear-gradient(135deg, var(--purple-light), var(--blue-light));
+      border-radius: var(--radius-lg); padding: 18px 22px;
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 28px; border: 2px solid var(--purple-light);
+    }
+    .mission-icon  { font-size: 2.5rem; }
+    .mission-label { font-size: 0.75rem; font-weight: 700; color: var(--purple); text-transform: uppercase; letter-spacing: 0.06em; }
+    .mission-text  { font-size: 0.95rem; font-weight: 800; color: var(--text-dark); margin-top: 2px; }
+  </style>
+</head>
+<body>
+  <div id="navbar-container"></div>
+
+  <main class="main-content">
+    <div class="container">
+
+      <!-- ─── SCREEN 1: PROFILE SELECTOR ─────────────────── -->
+      <div id="profile-selector" style="display:none;">
+        <div class="hero-section">
+          <img src="assets/LATIDOS.png" alt="Fundación Latidos"
+               style="width:min(280px,70vw); display:block; margin:0 auto 16px; mix-blend-mode:multiply;" />
+          <h1>¿Quién quiere <span style="color:var(--coral);">jugar</span>?</h1>
+          <p class="hero-tagline">Selecciona tu perfil o crea uno nuevo</p>
+        </div>
+
+        <div class="profile-grid" id="profile-grid"></div>
+      </div>
+
+      <!-- ─── SCREEN 2: NEW PLAYER FORM ──────────────────── -->
+      <div id="welcome-screen" style="display:none;">
+        <div class="hero-section">
+          <img src="assets/LATIDOS.png" alt="Fundación Latidos"
+               style="width:min(260px,65vw); display:block; margin:0 auto 16px; animation:float 2.2s ease-in-out infinite; mix-blend-mode:multiply;" />
+          <h1>¡Bienvenido a <span style="color:var(--coral);">Latidos</span> Niños!</h1>
+          <p class="hero-tagline">El lugar donde las matemáticas son una aventura</p>
+        </div>
+
+        <div class="card text-center" style="max-width:480px; margin: 0 auto 32px; padding: 32px;">
+          <h3 style="margin-bottom:18px;">¿Cómo te llamas? 😊</h3>
+          <input
+            type="text" id="player-name-input" class="input-field"
+            placeholder="Escribe tu nombre aquí..."
+            maxlength="20" autocomplete="off"
+            style="text-align:center; margin-bottom:24px;"
+          />
+
+          <h3 style="margin-bottom:14px;">Elige tu personaje 🐾</h3>
+          <div class="character-grid" id="char-selector">
+            <div class="character-card" data-char="bunny" tabindex="0" role="button" aria-label="Conejo">
+              <span class="char-emoji">🐰</span><div class="char-name">Conejito</div>
+            </div>
+            <div class="character-card" data-char="bear" tabindex="0" role="button" aria-label="Oso">
+              <span class="char-emoji">🐻</span><div class="char-name">Osito</div>
+            </div>
+            <div class="character-card" data-char="cat" tabindex="0" role="button" aria-label="Gato">
+              <span class="char-emoji">🐱</span><div class="char-name">Gatito</div>
+            </div>
+            <div class="character-card" data-char="fox" tabindex="0" role="button" aria-label="Zorro">
+              <span class="char-emoji">🦊</span><div class="char-name">Zorrito</div>
+            </div>
+            <div class="character-card" data-char="panda" tabindex="0" role="button" aria-label="Panda">
+              <span class="char-emoji">🐼</span><div class="char-name">Pandita</div>
+            </div>
+            <div class="character-card" data-char="chick" tabindex="0" role="button" aria-label="Pollito">
+              <span class="char-emoji">🐥</span><div class="char-name">Pollito</div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-lg w-full mt-24" id="start-btn" disabled
+            style="opacity:0.5; transition: opacity 0.3s;">
+            ¡Vamos a jugar! 🚀
+          </button>
+          <button class="btn btn-ghost btn-sm w-full mt-8" id="back-to-profiles-btn">
+            ← Volver a perfiles
+          </button>
+        </div>
+      </div>
+
+      <!-- ─── SCREEN 3: DASHBOARD ─────────────────────────── -->
+      <div id="dashboard" style="display:none;">
+
+        <!-- Player bar -->
+        <div class="player-bar">
+          <div class="flex items-center gap-16">
+            <span class="player-avatar" id="dash-avatar"></span>
+            <div>
+              <div style="font-size:0.75rem; color:var(--text-mid); font-weight:700;">¡Hola,</div>
+              <div id="dash-name" style="font-size:1.25rem; font-weight:900;"></div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div class="level-badge" id="dash-level">⭐ Nivel 1</div>
+            <div class="xp-track" style="margin-left:auto; margin-top:6px;">
+              <div class="xp-fill" id="dash-xp-bar" style="width:0%"></div>
+            </div>
+            <div style="font-size:0.68rem; color:var(--text-mid); font-weight:600; margin-top:2px;">
+              <span id="dash-xp">0</span>/50 XP
+            </div>
+          </div>
+        </div>
+
+        <!-- Mission of the day -->
+        <div class="daily-mission">
+          <span class="mission-icon" id="mission-icon">🎯</span>
+          <div>
+            <div class="mission-label">Misión del día</div>
+            <div class="mission-text" id="mission-text">Cargando...</div>
+          </div>
+        </div>
+
+        <!-- Module cards -->
+        <h2 class="section-title">📚 Elige tu aventura</h2>
+        <div class="module-grid">
+          <a href="pages/numbers.html" class="module-card coral" id="card-numbers">
+            <span class="module-icon">🔢</span>
+            <div class="module-title">Números</div>
+            <div class="module-subtitle">Contar, comparar y reconocer</div>
+            <div class="star-display" id="stars-numbers"></div>
+          </a>
+          <a href="pages/operations.html" class="module-card yellow" id="card-ops">
+            <span class="module-icon">🎮</span>
+            <div class="module-title">Operaciones</div>
+            <div class="module-subtitle">Suma · Resta · Mult · Div</div>
+            <div class="star-display" id="stars-ops"></div>
+          </a>
+          <a href="pages/tables.html" class="module-card green" id="card-tables">
+            <span class="module-icon">✖️</span>
+            <div class="module-title">Tablas</div>
+            <div class="module-subtitle">Memoriza la tabla · Bingo</div>
+            <div class="star-display" id="stars-tables"></div>
+          </a>
+          <a href="pages/rewards.html" class="module-card purple" id="card-rewards">
+            <span class="module-icon">🏆</span>
+            <div class="module-title">Premios</div>
+            <div class="module-subtitle">Medallas y logros</div>
+            <div style="font-size:0.8rem; color:var(--purple); font-weight:700; margin-top:8px;" id="badge-count"></div>
+          </a>
+        </div>
+
+        <!-- Quick stats -->
+        <div class="grid-3 mt-16">
+          <div class="card text-center card-coral">
+            <div style="font-size:2rem; font-weight:900; color:var(--coral);" id="stat-hearts"></div>
+            <div style="font-size:0.78rem; color:var(--text-mid); font-weight:700;">💖 Corazones</div>
+          </div>
+          <div class="card text-center card-yellow">
+            <div style="font-size:2rem; font-weight:900; color:var(--yellow-dark);" id="stat-stars"></div>
+            <div style="font-size:0.78rem; color:var(--text-mid); font-weight:700;">⭐ Estrellas</div>
+          </div>
+          <div class="card text-center card-purple">
+            <div style="font-size:2rem; font-weight:900; color:var(--purple);" id="stat-badges"></div>
+            <div style="font-size:0.78rem; color:var(--text-mid); font-weight:700;">🏅 Medallas</div>
+          </div>
+        </div>
+
+        <!-- Switch player -->
+        <div class="text-center mt-32">
+          <button id="switch-player-btn"
+            style="background:none;border:none;color:var(--text-light);font-size:0.78rem;
+                   font-family:var(--font);cursor:pointer;text-decoration:underline;">
+            👤 Cambiar jugador
+          </button>
+        </div>
+
+      </div>
+    </div><!-- /container -->
+  </main>
+
+  <script src="js/app.js"></script>
+  <script src="js/sounds.js"></script>
+  <script>
+    /* ── Home Page Logic ──────────────────────────────────────── */
+    App.initPage('home');
+
+    const MISSIONS = [
+      { icon:'➕', text:'Completa 5 sumas correctas en el juego de Operaciones' },
+      { icon:'✖️', text:'Aprende la tabla del 3 en la sección de Tablas' },
+      { icon:'🔢', text:'Identifica 10 números correctos en Números' },
+      { icon:'🎯', text:'Consigue 3 estrellas en cualquier juego' },
+      { icon:'🎊', text:'Juega al Bingo de Multiplicaciones' },
+      { icon:'➖', text:'Completa el juego de Restas sin errores' },
+    ];
+
+    /* ── Screen helpers ───────────── */
+    function show(id) {
+      ['profile-selector','welcome-screen','dashboard'].forEach(s => {
+        document.getElementById(s).style.display = (s === id) ? '' : 'none';
+      });
+    }
+
+    /* ── Render profile selector ──── */
+    function renderProfiles() {
+      show('profile-selector');
+      const grid = document.getElementById('profile-grid');
+      const profiles = App.getProfiles();
+
+      let html = profiles.map(p => `
+        <div class="profile-card" data-id="${p.id}" role="button" tabindex="0" aria-label="Jugador ${p.playerName}">
+          <button class="p-delete" data-del="${p.id}" title="Eliminar perfil" aria-label="Eliminar">✕</button>
+          <span class="p-avatar">${App.CHARACTERS[p.character] || '🐰'}</span>
+          <div class="p-name">${p.playerName}</div>
+          <div class="p-hearts">💖 ${p.hearts} · ⭐ Nv.${p.level}</div>
+        </div>
+      `).join('');
+
+      html += `
+        <div class="add-profile-card" id="add-profile-btn" role="button" tabindex="0" aria-label="Nuevo jugador">
+          <span class="add-icon">➕</span>
+          <span class="add-label">Nuevo jugador</span>
+        </div>
+      `;
+
+      grid.innerHTML = html;
+
+      // Profile click → dashboard
+      grid.querySelectorAll('.profile-card').forEach(card => {
+        function select() {
+          const del = false; // click propagated from delete btn handled separately
+          Sounds.click && Sounds.click();
+          App.switchProfile(card.dataset.id);
+          App.launchConfetti(30);
+          showDashboard();
+        }
+        card.addEventListener('click', e => {
+          if (e.target.closest('.p-delete')) return;
+          select();
+        });
+        card.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') select(); });
+      });
+
+      // Delete buttons
+      grid.querySelectorAll('.p-delete').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          if (confirm(`¿Borrar el perfil de este jugador? Se perderán todos sus datos.`)) {
+            App.deleteProfile(btn.dataset.del);
+            renderProfiles();
+          }
+        });
+      });
+
+      // Add new player
+      const addBtn = document.getElementById('add-profile-btn');
+      addBtn.addEventListener('click', showWelcome);
+      addBtn.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') showWelcome(); });
+    }
+
+    /* ── Welcome (new profile) ────── */
+    function showWelcome() {
+      show('welcome-screen');
+      selectedChar = null;
+      nameInput.value = '';
+      document.querySelectorAll('.character-card').forEach(c => c.classList.remove('selected'));
+      checkReady();
+    }
+
+    /* ── Dashboard ───────────────── */
+    function showDashboard() {
+      show('dashboard');
+      const s = App.getState();
+
+      document.getElementById('dash-avatar').textContent = App.getChar();
+      document.getElementById('dash-name').textContent   = s.playerName;
+      document.getElementById('dash-level').textContent  = `⭐ Nivel ${s.level}`;
+      const xp = s.hearts % 50;
+      document.getElementById('dash-xp-bar').style.width = (xp / 50 * 100) + '%';
+      document.getElementById('dash-xp').textContent     = xp;
+      document.getElementById('stat-hearts').textContent = s.hearts;
+
+      const totalStars = Object.values(s.stars).reduce((a,b) => a+b, 0);
+      document.getElementById('stat-stars').textContent  = totalStars;
+      document.getElementById('stat-badges').textContent = (s.badges||[]).length;
+      document.getElementById('badge-count').textContent = `${(s.badges||[]).length} medallas conseguidas`;
+
+      function renderStarRow(val, elId) {
+        const el = document.getElementById(elId); if (!el) return;
+        el.innerHTML = [0,1,2].map(i => `<span class="star${i<val?' filled':''}">⭐</span>`).join('');
+      }
+      renderStarRow(s.stars.numbers||0, 'stars-numbers');
+      const opsBest = Math.max(s.stars.addition||0, s.stars.subtraction||0, s.stars.multiplication||0, s.stars.division||0);
+      renderStarRow(opsBest, 'stars-ops');
+      renderStarRow(s.stars.tables||0, 'stars-tables');
+
+      const doy = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+      const m = MISSIONS[doy % MISSIONS.length];
+      document.getElementById('mission-icon').textContent = m.icon;
+      document.getElementById('mission-text').textContent = m.text;
+    }
+
+    /* ── Init flow ────────────────── */
+    const profiles = App.getProfiles();
+    if (profiles.length === 0) {
+      showWelcome(); // first time ever
+    } else {
+      renderProfiles(); // show who's playing
+    }
+
+    /* ── Character selection ──────── */
+    let selectedChar = null;
+    const nameInput = document.getElementById('player-name-input');
+    const startBtn  = document.getElementById('start-btn');
+
+    document.querySelectorAll('.character-card').forEach(card => {
+      function selectCard() {
+        Sounds.click && Sounds.click();
+        document.querySelectorAll('.character-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        selectedChar = card.dataset.char;
+        checkReady();
+      }
+      card.addEventListener('click', selectCard);
+      card.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' ') selectCard(); });
+    });
+
+    nameInput?.addEventListener('input', checkReady);
+
+    function checkReady() {
+      const ready = selectedChar && nameInput.value.trim().length > 0;
+      startBtn.disabled = !ready;
+      startBtn.style.opacity = ready ? '1' : '0.5';
+    }
+
+    startBtn?.addEventListener('click', () => {
+      if (!selectedChar || !nameInput.value.trim()) return;
+      Sounds.pop && Sounds.pop();
+      App.addProfile(nameInput.value.trim(), selectedChar);
+      App.launchConfetti(40);
+      App.showToast(`¡Hola, ${nameInput.value.trim()}! 🎉`);
+      setTimeout(showDashboard, 300);
+    });
+
+    /* ── Back to profiles ──────────── */
+    document.getElementById('back-to-profiles-btn')?.addEventListener('click', () => {
+      renderProfiles();
+    });
+
+    /* ── Switch player (from dashboard) */
+    document.getElementById('switch-player-btn')?.addEventListener('click', () => {
+      renderProfiles();
+    });
+  </script>
+</body>
+</html>

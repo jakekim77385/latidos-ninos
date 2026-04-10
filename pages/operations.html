@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Latidos Niños — Juegos de suma, resta, multiplicación y división para niños." />
+  <title>Operaciones — Latidos Niños</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .op-selector {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 28px;
+    }
+    .op-card {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 18px 8px; border-radius: var(--radius-lg); border: 3px solid transparent;
+      background: #fff; cursor: pointer; font-family: var(--font);
+      font-weight: 800; transition: all var(--transition); box-shadow: var(--shadow-sm);
+      gap: 6px;
+    }
+    .op-card:hover    { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .op-card.active   { border-color: var(--coral); background: var(--coral-light); color: var(--coral-dark); }
+    .op-card .op-sym  { font-size: 2rem; }
+    .op-card .op-lbl  { font-size: 0.78rem; color: var(--text-mid); }
+    .op-card.active .op-lbl { color: var(--coral-dark); }
+
+    .op-card.add-card:hover  { background: var(--green-light); border-color: var(--green); }
+    .op-card.sub-card:hover  { background: var(--coral-light); border-color: var(--coral); }
+    .op-card.mul-card:hover  { background: var(--blue-light);  border-color: var(--blue); }
+    .op-card.div-card:hover  { background: var(--purple-light);border-color: var(--purple); }
+
+    #game-area { animation: slide-up 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+
+    .level-selector {
+      display: flex; gap: 8px; justify-content: center; margin-bottom: 16px;
+    }
+    .level-btn {
+      padding: 6px 14px; border-radius: var(--radius-full);
+      border: 2px solid transparent; background: rgba(0,0,0,0.06);
+      font-family: var(--font); font-size: 0.82rem; font-weight: 800;
+      cursor: pointer; transition: all var(--transition-fast); color: var(--text-mid);
+    }
+    .level-btn.active { background: var(--coral); color: #fff; border-color: var(--coral); }
+    .level-btn:hover:not(.active) { background: var(--coral-light); color: var(--coral-dark); }
+
+    .big-eq { font-size: clamp(2.4rem,7vw,4rem); font-weight: 900; }
+  </style>
+</head>
+<body>
+  <div id="navbar-container"></div>
+
+  <main class="main-content">
+    <div class="container">
+
+      <div class="page-header">
+        <span class="page-emoji">🎮</span>
+        <h1>Juegos de <span style="color:var(--coral);">Operaciones</span></h1>
+        <p>Suma, Resta, Multiplicación y División</p>
+      </div>
+
+      <!-- Operation selector -->
+      <div class="op-selector" role="group" aria-label="Selecciona una operación">
+        <button class="op-card add-card active" data-op="add" id="op-add">
+          <span class="op-sym">➕</span>
+          <span>Suma</span>
+          <span class="op-lbl" id="stars-add">☆☆☆</span>
+        </button>
+        <button class="op-card sub-card" data-op="sub" id="op-sub">
+          <span class="op-sym">➖</span>
+          <span>Resta</span>
+          <span class="op-lbl" id="stars-sub">☆☆☆</span>
+        </button>
+        <button class="op-card mul-card" data-op="mul" id="op-mul">
+          <span class="op-sym">✖️</span>
+          <span>Mult.</span>
+          <span class="op-lbl" id="stars-mul">☆☆☆</span>
+        </button>
+        <button class="op-card div-card" data-op="div" id="op-div">
+          <span class="op-sym">➗</span>
+          <span>Divis.</span>
+          <span class="op-lbl" id="stars-div">☆☆☆</span>
+        </button>
+      </div>
+
+      <!-- Difficulty -->
+      <div class="level-selector" id="level-selector">
+        <button class="level-btn active" data-level="1">⭐ Fácil</button>
+        <button class="level-btn"        data-level="2">⭐⭐ Medio</button>
+        <button class="level-btn"        data-level="3">⭐⭐⭐ Difícil</button>
+      </div>
+
+      <!-- Game area -->
+      <div id="game-area">
+        <div class="game-stats" id="op-stats">
+          <div class="stat-item"><span class="stat-icon">⭐</span><span id="op-score">0</span> pts</div>
+          <div class="stat-item"><span class="stat-icon">💖</span><span id="op-lives">3</span></div>
+          <div class="stat-item" style="color:var(--text-mid); font-size:0.82rem; font-weight:700;">
+            Pregunta <span id="op-q">1</span>/10
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="equation-display big-eq">
+            <span class="eq-num" id="eq-a">?</span>
+            <span class="eq-op" id="eq-op">+</span>
+            <span class="eq-num" id="eq-b">?</span>
+            <span class="eq-op">=</span>
+            <span class="eq-ans">?</span>
+          </div>
+          <p style="color:var(--text-mid); font-size:0.85rem; font-weight:600; margin-top:8px;" id="eq-hint"></p>
+        </div>
+
+        <div id="op-answer-grid" class="answer-grid"></div>
+
+        <div class="progress-wrap mt-16">
+          <div class="progress-bar" id="op-progress" style="width:0%"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="../js/app.js"></script>
+  <script src="../js/sounds.js"></script>
+  <script src="../js/operations.js"></script>
+</body>
+</html>
