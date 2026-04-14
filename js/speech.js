@@ -1,48 +1,32 @@
 /**
- * speech.js — Latidos Niños
- * Web Speech API 기반 스페인어 TTS (Text-to-Speech)
+ * speech.js — Latidos Niños English
+ * Web Speech API 기반 TTS (Text-to-Speech)
  *
  * 사용법:
- *   Speech.say("uno");           // 단어 읽기
- *   Speech.sayNumber(5);         // 숫자 → 스페인어로 읽기
- *   Speech.isSupported()         // 지원 여부 확인
+ *   Speech.sayEnglish("Hello!");       // 영어 TTS
+ *   Speech.saySpanish("Hola!");        // 스페인어 TTS
+ *   Speech.say("text", { lang })      // 직접 lang 지정
+ *   Speech.isSupported()              // 지원 여부 확인
  */
 
 const Speech = (function () {
 
-  const NUMBERS_ES = {
-    0: 'cero', 1: 'uno', 2: 'dos', 3: 'tres', 4: 'cuatro',
-    5: 'cinco', 6: 'seis', 7: 'siete', 8: 'ocho', 9: 'nueve',
-    10: 'diez', 11: 'once', 12: 'doce', 13: 'trece', 14: 'catorce',
-    15: 'quince', 16: 'dieciséis', 17: 'diecisiete', 18: 'dieciocho',
-    19: 'diecinueve', 20: 'veinte', 21: 'veintiuno', 22: 'veintidós',
-    23: 'veintitrés', 24: 'veinticuatro', 25: 'veinticinco',
-    26: 'veintiséis', 27: 'veintisiete', 28: 'veintiocho', 29: 'veintinueve',
-    30: 'treinta', 40: 'cuarenta', 50: 'cincuenta',
-    60: 'sesenta', 70: 'setenta', 80: 'ochenta', 90: 'noventa',
-    100: 'cien',
-  };
-
-  function numberToSpanish(n) {
-    if (NUMBERS_ES[n] !== undefined) return NUMBERS_ES[n];
-    if (n > 20 && n < 30) return 'veinti' + NUMBERS_ES[n - 20];
-    if (n >= 31 && n <= 99) {
-      const tens = Math.floor(n / 10) * 10;
-      const ones = n % 10;
-      return ones === 0
-        ? NUMBERS_ES[tens]
-        : NUMBERS_ES[tens] + ' y ' + NUMBERS_ES[ones];
-    }
-    return String(n);
-  }
-
   let _voices = [];
-  let _spanishVoice = null;
+  let _enVoice = null;
+  let _esVoice = null;
 
   function _loadVoices() {
     _voices = window.speechSynthesis.getVoices();
-    // 스페인어 음성 우선순위: es-419(중남미) > es-MX > es-ES > es
-    _spanishVoice =
+
+    // 영어 음성: en-US 우선
+    _enVoice =
+      _voices.find(v => v.lang === 'en-US') ||
+      _voices.find(v => v.lang.startsWith('en-')) ||
+      _voices.find(v => v.lang.startsWith('en')) ||
+      null;
+
+    // 스페인어 음성: es-419(중남미) 우선
+    _esVoice =
       _voices.find(v => v.lang === 'es-419') ||
       _voices.find(v => v.lang === 'es-MX') ||
       _voices.find(v => v.lang.startsWith('es-')) ||
@@ -59,17 +43,22 @@ const Speech = (function () {
     return 'speechSynthesis' in window;
   }
 
-  function say(text, { rate = 0.8, pitch = 1.1 } = {}) {
+  function say(text, { rate = 0.8, pitch = 1.1, lang = 'en-US' } = {}) {
     if (!isSupported()) return;
     window.speechSynthesis.cancel();
-    // 끝 클리핑 방지: 뒤에 긴 침묵 패딩 추가
+
     const utt = new SpeechSynthesisUtterance(text + ' . . .');
-    utt.lang  = 'es-419';
+    utt.lang  = lang;
     utt.rate  = rate;
     utt.pitch = pitch;
-    if (_spanishVoice) utt.voice = _spanishVoice;
+
+    // 언어에 맞는 음성 선택
+    if (lang.startsWith('en') && _enVoice) utt.voice = _enVoice;
+    if (lang.startsWith('es') && _esVoice) utt.voice = _esVoice;
+
     window.speechSynthesis.speak(utt);
-    // Chrome: 15초 이상 silence 시 자동 pause 버그 방지
+
+    // Chrome: 긴 침묵 시 pause 버그 방지
     const keepAlive = setInterval(() => {
       if (window.speechSynthesis.speaking) {
         window.speechSynthesis.pause();
@@ -82,18 +71,22 @@ const Speech = (function () {
     return utt;
   }
 
-  function sayNumber(n, opts = {}) {
-    const word = numberToSpanish(n);
-    return say(word, opts);
+  function sayEnglish(text, opts = {}) {
+    return say(text, { rate: 0.82, pitch: 1.1, lang: 'en-US', ...opts });
   }
 
-  function getWord(n) {
-    return numberToSpanish(n);
+  function saySpanish(text, opts = {}) {
+    return say(text, { rate: 0.8, pitch: 1.1, lang: 'es-419', ...opts });
   }
 
-  function getAvailableVoices() {
-    return _voices.filter(v => v.lang.startsWith('es'));
+  // 알파벳 발음: 천천히, 또렷하게
+  function sayLetter(letter, opts = {}) {
+    return say(letter, { rate: 0.7, pitch: 1.15, lang: 'en-US', ...opts });
   }
 
-  return { isSupported, say, sayNumber, getWord, getAvailableVoices, NUMBERS_ES };
+  function getAvailableVoices(langPrefix = 'en') {
+    return _voices.filter(v => v.lang.startsWith(langPrefix));
+  }
+
+  return { isSupported, say, sayEnglish, saySpanish, sayLetter, getAvailableVoices };
 })();

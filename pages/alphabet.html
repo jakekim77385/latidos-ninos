@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn the English Alphabet A to Z with Latidos Niños." />
+  <title>Alphabet — Latidos Niños English</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    /* ── Learn Card ─────────────────────────── */
+    .alpha-card {
+      background: #fff;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      padding: 36px 28px 28px;
+      text-align: center;
+      max-width: 420px;
+      margin: 0 auto 20px;
+      border: 4px solid var(--coral-light);
+      transition: border-color var(--transition);
+      position: relative;
+    }
+    .alpha-card:hover { border-color: var(--coral); }
+
+    .alpha-big {
+      font-size: clamp(5rem, 18vw, 9rem);
+      font-weight: 900;
+      line-height: 1;
+      color: var(--coral);
+      cursor: pointer;
+      display: block;
+      transition: transform 0.15s;
+      user-select: none;
+    }
+    .alpha-big:active { transform: scale(0.92); }
+
+    .alpha-small {
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      font-weight: 900;
+      color: var(--blue);
+      display: block;
+      margin-top: 4px;
+    }
+    .alpha-emoji {
+      font-size: clamp(2.8rem, 9vw, 4.5rem);
+      display: block;
+      margin: 8px 0 4px;
+    }
+    .alpha-word {
+      font-size: clamp(1.1rem, 3.5vw, 1.6rem);
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-top: 8px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Speak button ───────────────────────── */
+    .speak-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--coral), #ff9a8b);
+      color: #fff; border: none; border-radius: var(--radius-full);
+      padding: 12px 28px; font-size: 1rem; font-weight: 800;
+      cursor: pointer; margin-top: 18px;
+      box-shadow: 0 4px 16px rgba(255,107,107,0.4);
+      transition: all var(--transition); font-family: var(--font);
+    }
+    .speak-btn:hover { transform: translateY(-2px) scale(1.04); }
+
+    /* ── Nav buttons ────────────────────────── */
+    .learn-nav {
+      display: flex; align-items: center; justify-content: center;
+      gap: 16px; margin-top: 10px;
+    }
+    .learn-nav-btn {
+      width: 50px; height: 50px; border-radius: 50%;
+      border: 2.5px solid var(--coral); background: #fff;
+      font-size: 1.4rem; cursor: pointer;
+      transition: all var(--transition); box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .learn-nav-btn:hover { background: var(--coral); color: #fff; transform: scale(1.1); }
+    .learn-counter {
+      font-size: 0.85rem; font-weight: 700; color: var(--text-mid);
+      min-width: 60px; text-align: center;
+    }
+
+    /* ── Group buttons ──────────────────────── */
+    .group-btns {
+      display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    /* ── Mini grid ──────────────────────────── */
+    .learn-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    /* ── Memory grid ────────────────────────── */
+    .mem-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin: 0 auto;
+      max-width: 560px;
+    }
+    .mc { aspect-ratio: 3/4; perspective: 600px; cursor: pointer; }
+    .mc-inner {
+      width: 100%; height: 100%; position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
+      border-radius: var(--radius-md);
+    }
+    .mc.flipped .mc-inner { transform: rotateY(180deg); }
+    .mc-front, .mc-back {
+      position: absolute; inset: 0;
+      border-radius: var(--radius-md);
+      backface-visibility: hidden;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow-sm); user-select: none;
+    }
+    .mc.matched .mc-back {
+      background: linear-gradient(135deg, var(--green-light), #d4f7d8) !important;
+      border-color: var(--green) !important;
+      color: var(--green-dark) !important;
+    }
+    .mc.wrong .mc-inner { animation: card-shake 0.45s ease; }
+    @keyframes card-shake {
+      0%,100% { transform: rotateY(180deg) translateX(0); }
+      25%      { transform: rotateY(180deg) translateX(-6px); }
+      75%      { transform: rotateY(180deg) translateX(6px); }
+    }
+
+    /* ── Memory stats bar ───────────────────── */
+    .mem-stats {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #fff; border-radius: var(--radius-lg);
+      padding: 10px 18px; margin-bottom: 16px;
+      box-shadow: var(--shadow-sm); font-weight: 800; font-size: 0.9rem;
+    }
+
+    /* ── Memory complete ────────────────────── */
+    .mem-complete {
+      text-align: center; padding: 32px 24px;
+      background: linear-gradient(135deg, var(--yellow-light), #fff9e0);
+      border-radius: var(--radius-xl); margin-top: 20px;
+      box-shadow: var(--shadow-md);
+      animation: slide-up 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    /* ── Quiz letter display ────────────────── */
+    .quiz-letter-card {
+      background: #fff; border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md); padding: 28px;
+      text-align: center; margin-bottom: 20px;
+      animation: slide-up 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .quiz-big-letter {
+      font-size: clamp(4rem, 14vw, 7rem);
+      font-weight: 900; color: var(--coral);
+      display: block; line-height: 1; cursor: pointer;
+    }
+    .quiz-emoji-hint {
+      font-size: clamp(1.6rem, 5vw, 2.5rem);
+      display: block; margin-top: 8px;
+    }
+    .quiz-instruction {
+      font-size: 0.88rem; font-weight: 700;
+      color: var(--text-mid); margin-top: 10px;
+    }
+
+    /* ── Quiz options ───────────────────────── */
+    #quiz-options.answer-grid .answer-btn {
+      font-size: clamp(2rem, 6vw, 3rem) !important;
+      font-weight: 900;
+    }
+  </style>
+</head>
+<body>
+  <div id="navbar-container"></div>
+
+  <main class="main-content">
+    <div class="container">
+
+      <div class="page-header">
+        <span class="page-emoji">🔤</span>
+        <h1>The <span style="color:var(--coral);">Alphabet</span></h1>
+        <p>Learn A to Z — Letter by letter!</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tab-bar" role="tablist">
+        <button class="tab-btn active" data-tab="learn"  role="tab" id="tab-learn">📖 Learn</button>
+        <button class="tab-btn"        data-tab="memory" role="tab" id="tab-memory">🃏 Memory</button>
+        <button class="tab-btn"        data-tab="quiz"   role="tab" id="tab-quiz">❓ Quiz</button>
+      </div>
+
+      <!-- ────────── TAB: LEARN ────────── -->
+      <div data-tab-panel="learn" class="tab-content">
+
+        <!-- 그룹 선택 버튼 -->
+        <div class="group-btns" id="learn-group-btns"></div>
+
+        <!-- 메인 카드 -->
+        <div class="alpha-card">
+          <span class="alpha-big"  id="learn-big"   title="Click to hear">A</span>
+          <span class="alpha-small" id="learn-small">a</span>
+          <span class="alpha-emoji" id="learn-emoji">🍎</span>
+          <div class="alpha-word"   id="learn-word">Apple</div>
+          <button class="speak-btn" id="learn-speak">🔊 Listen</button>
+        </div>
+
+        <!-- prev / counter / next -->
+        <div class="learn-nav">
+          <button class="learn-nav-btn" id="learn-prev" title="Previous">◀</button>
+          <span   class="learn-counter" id="learn-counter">1 / 5</span>
+          <button class="learn-nav-btn" id="learn-next" title="Next">▶</button>
+        </div>
+
+        <!-- 빠른 선택 미니 그리드 -->
+        <div style="margin-top:20px;">
+          <p style="font-size:0.8rem;font-weight:700;color:var(--text-mid);margin-bottom:10px;text-align:center;">
+            🎯 Tap any letter to hear it!
+          </p>
+          <div class="learn-mini-grid" id="learn-mini-grid"></div>
+        </div>
+
+      </div>
+
+      <!-- ────────── TAB: MEMORY ────────── -->
+      <div data-tab-panel="memory" class="tab-content" style="display:none;">
+
+        <div class="group-btns" id="mem-group-btns"></div>
+
+        <div class="mem-stats">
+          <span id="mem-moves">🃏 0 tries</span>
+          <span id="mem-pairs">⭐ 0 / 5 pairs</span>
+          <button id="mem-restart" class="btn btn-sm btn-ghost">🔄 Restart</button>
+        </div>
+
+        <p style="text-align:center; font-size:0.85rem; font-weight:700; color:var(--text-mid); margin-bottom:14px;">
+          Match the <span style="color:var(--coral); font-weight:900;">UPPERCASE</span>
+          with the <span style="color:var(--blue); font-weight:900;">lowercase</span> letter!
+        </p>
+
+        <div id="mem-grid" class="mem-grid"></div>
+
+        <div id="mem-complete" class="mem-complete" style="display:none;">
+          <span style="font-size:3rem; display:block; margin-bottom:8px;">🎉</span>
+          <p style="font-size:1.1rem; font-weight:800; color:var(--text-dark);">
+            Great job! <span id="mem-complete-moves"></span> tries!
+          </p>
+          <button class="btn btn-primary mt-16" id="mem-next-group">Next group ▶</button>
+        </div>
+
+      </div>
+
+      <!-- ────────── TAB: QUIZ ────────── -->
+      <div data-tab-panel="quiz" class="tab-content" style="display:none;">
+
+        <div class="game-stats">
+          <div class="stat-item"><span class="stat-icon">⭐</span><span id="quiz-score">0</span> pts</div>
+          <div class="stat-item"><span class="stat-icon">💖</span><span id="quiz-lives">💖💖💖</span></div>
+          <div class="stat-item" style="color:var(--text-mid); font-size:0.82rem; font-weight:700;">
+            Question <span id="quiz-q">1</span>/10
+          </div>
+        </div>
+
+        <div class="quiz-letter-card">
+          <span class="quiz-big-letter" id="quiz-letter" title="Click to hear">A</span>
+          <span class="quiz-emoji-hint" id="quiz-emoji">🍎</span>
+          <p class="quiz-instruction">Which is the <strong style="color:var(--blue);">lowercase</strong> letter?</p>
+        </div>
+
+        <div id="quiz-options" class="answer-grid"></div>
+
+        <div class="progress-wrap mt-16">
+          <div class="progress-bar" id="quiz-progress" style="width:0%"></div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <script src="../js/app.js"></script>
+  <script src="../js/sounds.js"></script>
+  <script src="../js/speech.js"></script>
+  <script src="../js/alphabet.js"></script>
+</body>
+</html>

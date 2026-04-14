@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn basic English phrases with Latidos Niños — Greetings, Feelings, Classroom phrases and more!" />
+  <title>Phrases — Latidos Niños English</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    /* ── Category Selector ──────────────────── */
+    .cat-selector {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      justify-content: center; margin-bottom: 20px;
+    }
+    .cat-btn {
+      padding: 8px 14px; border-radius: var(--radius-full);
+      border: 2.5px solid rgba(0,0,0,0.08); background: #fff;
+      font-family: var(--font); font-size: 0.78rem; font-weight: 800;
+      cursor: pointer; transition: all var(--transition-fast);
+      color: var(--text-mid); box-shadow: var(--shadow-sm);
+    }
+    .cat-btn:hover  { background: var(--coral-light); color: var(--coral); border-color: var(--coral-light); }
+    .cat-btn.active { background: var(--coral); color: #fff; border-color: var(--coral); }
+
+    /* ── Phrase Card ────────────────────────── */
+    .phrase-card {
+      background: #fff; border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg); padding: 36px 28px 24px;
+      text-align: center; max-width: 480px;
+      margin: 0 auto 20px;
+      border: 4px solid var(--coral-light);
+      transition: border-color var(--transition);
+    }
+    .phrase-card:hover { border-color: var(--coral); }
+
+    .phrase-emoji {
+      font-size: clamp(3rem, 10vw, 5rem);
+      display: block; cursor: pointer;
+      transition: transform 0.15s; user-select: none;
+      margin-bottom: 10px;
+    }
+    .phrase-emoji:active { transform: scale(0.9); }
+
+    .phrase-english {
+      font-size: clamp(1.3rem, 4.5vw, 2rem);
+      font-weight: 900; color: var(--coral);
+      display: block; margin-bottom: 10px;
+      line-height: 1.3;
+    }
+    .phrase-spanish {
+      font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+      color: var(--text-mid); font-weight: 700;
+      font-style: italic;
+    }
+
+    .speak-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--coral), #ff9a8b);
+      color: #fff; border: none; border-radius: var(--radius-full);
+      padding: 11px 24px; font-size: 0.95rem; font-weight: 800;
+      cursor: pointer; margin-top: 16px;
+      box-shadow: 0 4px 16px rgba(255,107,107,0.4);
+      transition: all var(--transition); font-family: var(--font);
+    }
+    .speak-btn:hover { transform: translateY(-2px) scale(1.04); }
+
+    .learn-nav {
+      display: flex; align-items: center; justify-content: center;
+      gap: 16px; margin-top: 10px;
+    }
+    .learn-nav-btn {
+      width: 50px; height: 50px; border-radius: 50%;
+      border: 2.5px solid var(--coral); background: #fff;
+      font-size: 1.4rem; cursor: pointer;
+      transition: all var(--transition); box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .learn-nav-btn:hover { background: var(--coral); color: #fff; transform: scale(1.1); }
+    .learn-counter {
+      font-size: 0.85rem; font-weight: 700; color: var(--text-mid); min-width: 60px; text-align: center;
+    }
+
+    /* ── Mini phrase grid ───────────────────── */
+    .ph-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px; margin-top: 18px;
+    }
+
+    /* ── Quiz ───────────────────────────────── */
+    .phq-options {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; max-width: 520px; margin: 0 auto 20px;
+    }
+    .phq-btn {
+      padding: 16px 12px; border-radius: var(--radius-lg);
+      border: 2.5px solid var(--coral-light); background: #fff;
+      font-family: var(--font); font-weight: 800;
+      font-size: clamp(0.78rem, 2.2vw, 0.95rem);
+      color: var(--text-dark); cursor: pointer; text-align: center;
+      transition: transform 0.12s, border-color 0.15s, background 0.15s;
+      line-height: 1.35;
+    }
+    .phq-btn:hover { transform: translateY(-2px); border-color: var(--coral); background: var(--coral-light); }
+    .phq-btn.qw-correct {
+      background: linear-gradient(135deg, var(--green-light), #c8f5cc);
+      border-color: var(--green); color: var(--green-dark);
+      animation: pop-in 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .phq-btn.qw-wrong {
+      background: linear-gradient(135deg, #ffe0e0, #ffd0d0);
+      border-color: #ff6b6b; color: #c0392b;
+    }
+
+    .phq-emoji-big {
+      font-size: clamp(3rem, 10vw, 5rem);
+      display: block; text-align: center;
+      margin: 8px 0 4px;
+      animation: pop-in 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .phq-hint {
+      font-size: 0.85rem; font-weight: 700;
+      color: var(--text-mid); font-style: italic;
+      text-align: center; margin-bottom: 14px;
+    }
+
+    /* ── Listen badge ───────────────────────── */
+    .listen-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--blue-light); color: var(--blue-dark);
+      border-radius: var(--radius-full); padding: 4px 12px;
+      font-size: 0.75rem; font-weight: 800; margin-top: 8px;
+      cursor: pointer; border: 2px solid var(--blue-light);
+      transition: all var(--transition-fast);
+    }
+    .listen-badge:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
+  </style>
+</head>
+<body>
+  <div id="navbar-container"></div>
+
+  <main class="main-content">
+    <div class="container">
+
+      <div class="page-header">
+        <span class="page-emoji">💬</span>
+        <h1><span style="color:var(--coral);">Phrases</span></h1>
+        <p>Basic English phrases for every day!</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tab-bar" role="tablist">
+        <button class="tab-btn active" data-tab="learn" role="tab" id="tab-learn">📖 Learn</button>
+        <button class="tab-btn"        data-tab="quiz"  role="tab" id="tab-quiz">❓ Quiz</button>
+      </div>
+
+      <!-- Category Selector -->
+      <div class="cat-selector" id="ph-cat-selector"></div>
+
+      <!-- ────────── TAB: LEARN ────────── -->
+      <div data-tab-panel="learn" class="tab-content">
+
+        <div class="phrase-card">
+          <span class="phrase-emoji" id="ph-emoji" title="Click to hear">👋</span>
+          <span class="phrase-english" id="ph-english">Hello!</span>
+          <div class="phrase-spanish"   id="ph-spanish">¡Hola!</div>
+          <button class="speak-btn" id="ph-speak">🔊 Listen</button>
+        </div>
+
+        <div class="learn-nav">
+          <button class="learn-nav-btn" id="ph-prev">◀</button>
+          <span   class="learn-counter" id="ph-counter">1 / 6</span>
+          <button class="learn-nav-btn" id="ph-next">▶</button>
+        </div>
+
+        <div style="margin-top:20px;">
+          <p style="font-size:0.8rem;font-weight:700;color:var(--text-mid);margin-bottom:10px;text-align:center;">
+            🎯 Tap any phrase to hear it!
+          </p>
+          <div class="ph-mini-grid" id="ph-mini-grid"></div>
+        </div>
+
+      </div>
+
+      <!-- ────────── TAB: QUIZ ────────── -->
+      <div data-tab-panel="quiz" class="tab-content" style="display:none;">
+
+        <div class="game-stats">
+          <div class="stat-item"><span class="stat-icon">⭐</span><span id="phq-score">0</span> pts</div>
+          <div class="stat-item"><span class="stat-icon">💖</span><span id="phq-lives">💖💖💖</span></div>
+          <div class="stat-item" style="color:var(--text-mid); font-size:0.82rem; font-weight:700;">
+            <span id="phq-q">1/6</span>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <p style="color:var(--text-mid); font-size:0.85rem; font-weight:700; margin-bottom:4px;">
+            Which phrase is this? 🧐
+          </p>
+          <span class="phq-emoji-big" id="phq-emoji">👋</span>
+          <p class="phq-hint" id="phq-snippet">Hint in Spanish</p>
+          <button class="listen-badge" id="phq-listen">🔊 Listen again</button>
+        </div>
+
+        <div id="phq-options" class="phq-options"></div>
+
+        <div class="progress-wrap mt-16">
+          <div class="progress-bar" id="phq-progress" style="width:0%"></div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <script src="../js/app.js"></script>
+  <script src="../js/sounds.js"></script>
+  <script src="../js/speech.js"></script>
+  <script src="../js/phrases.js"></script>
+  <script>
+    // Quiz 페이지의 Listen again 버튼
+    document.getElementById('phq-listen')?.addEventListener('click', () => {
+      const phEl = document.getElementById('phq-snippet');
+      // phrases.js의 QUIZ.correct를 직접 참조하기 어려우므로
+      // 현재 표시된 emoji 옆의 snippet으로 hint만 제공
+    });
+  </script>
+</body>
+</html>
