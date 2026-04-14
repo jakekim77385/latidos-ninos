@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn English words with Latidos Niños — Colors, Animals, Food, and more!" />
+  <title>Words — Latidos Niños English</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    /* ── Category Selector ──────────────────── */
+    .cat-selector {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      justify-content: center; margin-bottom: 20px;
+    }
+    .cat-btn {
+      padding: 8px 16px; border-radius: var(--radius-full);
+      border: 2.5px solid rgba(0,0,0,0.08); background: #fff;
+      font-family: var(--font); font-size: 0.82rem; font-weight: 800;
+      cursor: pointer; transition: all var(--transition-fast);
+      color: var(--text-mid); box-shadow: var(--shadow-sm);
+    }
+    .cat-btn:hover  { background: var(--coral-light); color: var(--coral); border-color: var(--coral-light); }
+    .cat-btn.active { background: var(--coral); color: #fff; border-color: var(--coral); }
+
+    /* ── Learn Word Card ────────────────────── */
+    .word-card {
+      background: #fff; border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg); padding: 36px 28px 28px;
+      text-align: center; max-width: 440px;
+      margin: 0 auto 20px;
+      border: 4px solid var(--coral-light);
+      transition: border-color var(--transition);
+    }
+    .word-card:hover { border-color: var(--coral); }
+
+    .word-emoji {
+      font-size: clamp(4rem, 14vw, 7rem);
+      display: block; cursor: pointer;
+      transition: transform 0.15s; user-select: none;
+    }
+    .word-emoji:active { transform: scale(0.9); }
+
+    .word-english {
+      font-size: clamp(1.8rem, 6vw, 2.8rem);
+      font-weight: 900; color: var(--coral);
+      display: block; margin-top: 12px;
+    }
+    .word-spanish {
+      font-size: clamp(1rem, 3vw, 1.3rem);
+      color: var(--text-mid); font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .speak-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--coral), #ff9a8b);
+      color: #fff; border: none; border-radius: var(--radius-full);
+      padding: 12px 28px; font-size: 1rem; font-weight: 800;
+      cursor: pointer; margin-top: 18px;
+      box-shadow: 0 4px 16px rgba(255,107,107,0.4);
+      transition: all var(--transition); font-family: var(--font);
+    }
+    .speak-btn:hover { transform: translateY(-2px) scale(1.04); }
+
+    .learn-nav {
+      display: flex; align-items: center; justify-content: center;
+      gap: 16px; margin-top: 10px;
+    }
+    .learn-nav-btn {
+      width: 50px; height: 50px; border-radius: 50%;
+      border: 2.5px solid var(--coral); background: #fff;
+      font-size: 1.4rem; cursor: pointer;
+      transition: all var(--transition); box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .learn-nav-btn:hover { background: var(--coral); color: #fff; transform: scale(1.1); }
+    .learn-counter {
+      font-size: 0.85rem; font-weight: 700; color: var(--text-mid); min-width: 60px; text-align: center;
+    }
+    .word-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px; margin-top: 18px;
+    }
+
+    /* ── Memory Grid ────────────────────────── */
+    .wm-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px; margin: 0 auto; max-width: 560px;
+    }
+    .mc { aspect-ratio: 3/4; perspective: 600px; cursor: pointer; }
+    .mc-inner {
+      width: 100%; height: 100%; position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
+      border-radius: var(--radius-md);
+    }
+    .mc.flipped .mc-inner { transform: rotateY(180deg); }
+    .mc-front, .mc-back {
+      position: absolute; inset: 0; border-radius: var(--radius-md);
+      backface-visibility: hidden;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow-sm); user-select: none;
+    }
+    .mc.matched .mc-back {
+      background: linear-gradient(135deg, var(--green-light), #d4f7d8) !important;
+      border-color: var(--green) !important; color: var(--green-dark) !important;
+    }
+    .mc.wrong .mc-inner { animation: card-shake 0.45s ease; }
+    @keyframes card-shake {
+      0%,100% { transform: rotateY(180deg) translateX(0); }
+      25%     { transform: rotateY(180deg) translateX(-6px); }
+      75%     { transform: rotateY(180deg) translateX(6px); }
+    }
+    .wm-stats {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #fff; border-radius: var(--radius-lg);
+      padding: 10px 18px; margin-bottom: 16px;
+      box-shadow: var(--shadow-sm); font-weight: 800; font-size: 0.9rem;
+    }
+    .wm-complete {
+      text-align: center; padding: 32px 24px;
+      background: linear-gradient(135deg, var(--yellow-light), #fff9e0);
+      border-radius: var(--radius-xl); margin-top: 20px;
+      box-shadow: var(--shadow-md);
+      animation: slide-up 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    /* ── Quiz ───────────────────────────────── */
+    .wq-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; max-width: 480px; margin: 0 auto 20px;
+    }
+    .wq-btn {
+      padding: 16px 10px; border-radius: var(--radius-lg);
+      border: 2.5px solid var(--coral-light); background: #fff;
+      font-family: var(--font); font-weight: 800; font-size: clamp(0.9rem,2.5vw,1.15rem);
+      color: var(--text-dark); cursor: pointer;
+      transition: transform 0.12s, border-color 0.15s, background 0.15s;
+    }
+    .wq-btn:hover { transform: translateY(-2px); border-color: var(--coral); background: var(--coral-light); }
+    .wq-btn.qw-correct {
+      background: linear-gradient(135deg, var(--green-light), #c8f5cc);
+      border-color: var(--green); color: var(--green-dark);
+      animation: pop-in 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .wq-btn.qw-wrong {
+      background: linear-gradient(135deg, #ffe0e0, #ffd0d0);
+      border-color: #ff6b6b; color: #c0392b;
+    }
+    .wq-emoji-display {
+      font-size: clamp(4rem, 14vw, 7rem);
+      display: block; text-align: center; margin: 8px 0;
+      animation: pop-in 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+  </style>
+</head>
+<body>
+  <div id="navbar-container"></div>
+
+  <main class="main-content">
+    <div class="container">
+
+      <div class="page-header">
+        <span class="page-emoji">📚</span>
+        <h1><span style="color:var(--coral);">Words</span></h1>
+        <p>Learn English words — Colors, Animals, Food &amp; more!</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tab-bar" role="tablist">
+        <button class="tab-btn active" data-tab="learn"  role="tab" id="tab-learn">📖 Learn</button>
+        <button class="tab-btn"        data-tab="memory" role="tab" id="tab-memory">🃏 Memory</button>
+        <button class="tab-btn"        data-tab="quiz"   role="tab" id="tab-quiz">❓ Quiz</button>
+      </div>
+
+      <!-- Category Selector (공유) -->
+      <div class="cat-selector" id="cat-selector"></div>
+
+      <!-- ────────── TAB: LEARN ────────── -->
+      <div data-tab-panel="learn" class="tab-content">
+
+        <div class="word-card">
+          <span class="word-emoji" id="learn-emoji" title="Click to hear">🔴</span>
+          <span class="word-english" id="learn-word">Red</span>
+          <div class="word-spanish"  id="learn-es">Rojo</div>
+          <button class="speak-btn" id="learn-speak">🔊 Listen</button>
+        </div>
+
+        <div class="learn-nav">
+          <button class="learn-nav-btn" id="learn-prev">◀</button>
+          <span   class="learn-counter" id="learn-counter">1 / 10</span>
+          <button class="learn-nav-btn" id="learn-next">▶</button>
+        </div>
+
+        <div style="margin-top:20px;">
+          <p style="font-size:0.8rem;font-weight:700;color:var(--text-mid);margin-bottom:10px;text-align:center;">
+            🎯 Tap any word to hear it!
+          </p>
+          <div class="word-mini-grid" id="learn-word-grid"></div>
+        </div>
+
+      </div>
+
+      <!-- ────────── TAB: MEMORY ────────── -->
+      <div data-tab-panel="memory" class="tab-content" style="display:none;">
+
+        <div class="wm-stats">
+          <span id="wm-moves">🃏 0 tries</span>
+          <span id="wm-pairs">⭐ 0 / 8 pairs</span>
+          <button id="wm-restart" class="btn btn-sm btn-ghost">🔄 Restart</button>
+        </div>
+
+        <p style="text-align:center; font-size:0.85rem; font-weight:700; color:var(--text-mid); margin-bottom:14px;">
+          Match the <span style="color:var(--coral); font-weight:900;">picture</span>
+          with the <span style="color:var(--green-dark); font-weight:900;">word</span>!
+        </p>
+
+        <div id="wm-grid" class="wm-grid"></div>
+
+        <div id="wm-complete" class="wm-complete" style="display:none;">
+          <span style="font-size:3rem;display:block;margin-bottom:8px;">🎉</span>
+          <p style="font-size:1.1rem; font-weight:800; color:var(--text-dark);">
+            Great job! <span id="wm-complete-moves"></span> tries!
+          </p>
+        </div>
+
+      </div>
+
+      <!-- ────────── TAB: QUIZ ────────── -->
+      <div data-tab-panel="quiz" class="tab-content" style="display:none;">
+
+        <div class="game-stats">
+          <div class="stat-item"><span class="stat-icon">⭐</span><span id="wq-score">0</span> pts</div>
+          <div class="stat-item"><span class="stat-icon">💖</span><span id="wq-lives">💖💖💖</span></div>
+          <div class="stat-item" style="color:var(--text-mid); font-size:0.82rem; font-weight:700;">
+            Question <span id="wq-q">1</span>/10
+          </div>
+        </div>
+
+        <div class="question-card">
+          <p style="color:var(--text-mid); font-size:0.9rem; font-weight:700; margin-bottom:6px;">
+            What is this? 🤔
+          </p>
+          <span class="wq-emoji-display" id="wq-emoji">🔴</span>
+        </div>
+
+        <div id="wq-options" class="wq-grid"></div>
+
+        <div class="progress-wrap mt-16">
+          <div class="progress-bar" id="wq-progress" style="width:0%"></div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <script src="../js/app.js"></script>
+  <script src="../js/sounds.js"></script>
+  <script src="../js/speech.js"></script>
+  <script src="../js/words.js"></script>
+</body>
+</html>

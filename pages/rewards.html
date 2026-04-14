@@ -3,34 +3,58 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Latidos Niños — Tus premios, medallas y logros conseguidos." />
-  <title>Premios — Latidos Niños</title>
+  <meta name="description" content="My medals and achievements in Latidos Niños English!" />
+  <title>My Medals — Latidos Niños English</title>
   <link rel="stylesheet" href="../css/style.css" />
   <style>
-    .trophy-banner {
-      background: linear-gradient(135deg, var(--yellow), var(--orange));
-      border-radius: var(--radius-xl); padding: 28px 24px;
-      display: flex; align-items: center; gap: 20px;
-      box-shadow: var(--shadow-lg); margin-bottom: 32px; color: #fff;
+    .reward-hero {
+      text-align: center; padding: 16px 0 28px;
     }
-    .trophy-icon  { font-size: 3.5rem; flex-shrink: 0; }
-    .trophy-name  { font-size: 1.3rem; font-weight: 900; }
-    .trophy-sub   { font-size: 0.88rem; opacity: 0.88; font-weight: 600; margin-top: 2px; }
-
-    .stat-card {
-      background: #fff; border-radius: var(--radius-lg); padding: 20px;
-      text-align: center; box-shadow: var(--shadow-sm);
+    .hearts-big {
+      font-size: clamp(3rem, 10vw, 5rem);
+      font-weight: 900; color: var(--coral);
+      display: block; animation: heartbeat 2s ease-in-out infinite;
     }
-    .stat-card-num { font-size: 2.4rem; font-weight: 900; }
-    .stat-card-lbl { font-size: 0.78rem; color: var(--text-mid); font-weight: 700; margin-top: 4px; }
+    .level-wrap {
+      display: flex; align-items: center; justify-content: center;
+      gap: 14px; margin: 12px 0;
+    }
 
-    .module-progress { display: flex; flex-direction: column; gap: 16px; }
-    .mp-row { display: flex; align-items: center; gap: 14px; }
-    .mp-icon { font-size: 1.6rem; width: 36px; text-align: center; }
-    .mp-name { font-size: 0.88rem; font-weight: 700; min-width: 90px; }
-    .mp-stars { display: flex; gap: 3px; }
-    .mp-stars .star { font-size: 1.1rem; }
-    .mp-bar-wrap { flex: 1; }
+    /* Module progress cards */
+    .module-progress {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+      gap: 16px; margin-bottom: 36px;
+    }
+    .mp-card {
+      background: #fff; border-radius: var(--radius-lg);
+      padding: 20px; box-shadow: var(--shadow-sm);
+      border: 2px solid transparent; transition: all var(--transition);
+    }
+    .mp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+    .mp-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .mp-icon   { font-size: 1.8rem; }
+    .mp-name   { font-weight: 800; font-size: 1rem; }
+    .mp-stars  { display: flex; gap: 4px; margin-top: 6px; }
+    .mp-star   { font-size: 1.3rem; filter: grayscale(1) opacity(0.3); transition: all 0.25s; }
+    .mp-star.filled { filter: none; }
+
+    /* Badges */
+    .badges-section { margin-top: 8px; }
+    .badge-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(115px,1fr));
+      gap: 14px;
+    }
+    .badge-item {
+      text-align: center; padding: 18px 10px;
+      border-radius: var(--radius-lg); background: #fff;
+      box-shadow: var(--shadow-sm); transition: all var(--transition);
+    }
+    .badge-item.locked { opacity: 0.38; filter: grayscale(1); }
+    .badge-item:not(.locked):hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .badge-icon { font-size: 2.4rem; display: block; margin-bottom: 6px; }
+    .badge-name { font-size: 0.73rem; font-weight: 800; }
+    .badge-desc { font-size: 0.62rem; color: var(--text-light); margin-top: 2px; line-height: 1.3; }
   </style>
 </head>
 <body>
@@ -41,56 +65,32 @@
 
       <div class="page-header">
         <span class="page-emoji">🏆</span>
-        <h1>Tus <span style="color:var(--coral);">Premios</span></h1>
-        <p>¡Mira todo lo que has logrado!</p>
+        <h1>My <span style="color:var(--coral);">Medals</span></h1>
+        <p>Collect badges — keep learning English!</p>
       </div>
 
-      <!-- Trophy banner -->
-      <div class="trophy-banner" id="trophy-banner">
-        <span class="trophy-icon" id="trophy-char"></span>
-        <div>
-          <div class="trophy-name" id="trophy-name"></div>
-          <div class="trophy-sub"  id="trophy-sub"></div>
-        </div>
-        <div style="margin-left:auto; text-align:right;">
-          <div class="level-badge" id="trophy-level"></div>
-          <div style="font-size:0.8rem; opacity:0.88; margin-top:6px;" id="trophy-hearts"></div>
-        </div>
-      </div>
-
-      <!-- Quick stats -->
-      <div class="grid-3 mb-24">
-        <div class="stat-card" style="border-top:4px solid var(--coral);">
-          <div class="stat-card-num" style="color:var(--coral);" id="sw-hearts"></div>
-          <div class="stat-card-lbl">💖 Corazones totales</div>
-        </div>
-        <div class="stat-card" style="border-top:4px solid var(--yellow);">
-          <div class="stat-card-num" style="color:var(--yellow-dark);" id="sw-stars"></div>
-          <div class="stat-card-lbl">⭐ Estrellas ganadas</div>
-        </div>
-        <div class="stat-card" style="border-top:4px solid var(--purple);">
-          <div class="stat-card-num" style="color:var(--purple);" id="sw-badges"></div>
-          <div class="stat-card-lbl">🏅 Medallas</div>
+      <!-- Hero: hearts + level -->
+      <div class="reward-hero">
+        <span class="hearts-big" id="total-hearts">0</span>
+        <p style="font-size:1rem;font-weight:700;color:var(--text-mid);margin:4px 0 12px;">Total Hearts 💖</p>
+        <div class="level-wrap">
+          <span class="level-badge" id="level-display">⭐ Level 1</span>
+          <div class="progress-wrap" style="flex:1;max-width:220px;">
+            <div class="progress-bar" id="level-progress" style="width:0%"></div>
+          </div>
         </div>
       </div>
 
-      <!-- Module progress -->
-      <div class="section">
-        <h2 class="section-title">📊 Progreso por módulo</h2>
-        <div class="card">
-          <div class="module-progress" id="module-progress"></div>
-        </div>
+      <!-- Module Stars -->
+      <h2 class="section-title">📈 My Progress</h2>
+      <div class="module-progress" id="module-progress">
+        <!-- generated by JS -->
       </div>
 
       <!-- Badges -->
-      <div class="section">
-        <h2 class="section-title">🏅 Medallas</h2>
+      <div class="badges-section">
+        <h2 class="section-title">🏅 Badges</h2>
         <div class="badge-grid" id="badge-grid"></div>
-      </div>
-
-      <!-- Encouragement -->
-      <div class="card text-center mt-24" style="background: linear-gradient(135deg,var(--purple-light),var(--blue-light)); border:none;">
-        <p style="font-size:1.1rem; font-weight:800; color:var(--purple-dark);" id="encourage-msg"></p>
       </div>
 
     </div>
@@ -98,6 +98,83 @@
 
   <script src="../js/app.js"></script>
   <script src="../js/sounds.js"></script>
-  <script src="../js/rewards.js"></script>
+  <script>
+    App.initPage('rewards');
+
+    const state = App.getState();
+
+    // ── Hearts & Level ──────────────────────────────────
+    document.getElementById('total-hearts').textContent = state.hearts;
+    document.getElementById('level-display').textContent = `⭐ Level ${state.level}`;
+    const progressToNext = (state.hearts % 50) / 50 * 100;
+    document.getElementById('level-progress').style.width = progressToNext + '%';
+
+    // ── Module Progress ─────────────────────────────────
+    const MODULES = [
+      { key:'alphabet', icon:'🔤', name:'Alphabet', href:'alphabet.html', color:'coral' },
+      { key:'words',    icon:'📚', name:'Words',    href:'words.html',    color:'green' },
+      { key:'phrases',  icon:'💬', name:'Phrases',  href:'phrases.html',  color:'blue'  },
+    ];
+
+    const mpWrap = document.getElementById('module-progress');
+    MODULES.forEach(m => {
+      const s = state.stars[m.key] || 0;
+      const card = document.createElement('div');
+      card.className = 'mp-card';
+      card.innerHTML = `
+        <div class="mp-header">
+          <span class="mp-icon">${m.icon}</span>
+          <span class="mp-name">${m.name}</span>
+        </div>
+        <div class="mp-stars">
+          ${[0,1,2].map(i => `<span class="mp-star${i < s ? ' filled' : ''}">⭐</span>`).join('')}
+        </div>
+        <p style="font-size:0.72rem;color:var(--text-mid);font-weight:700;margin-top:8px;">
+          ${s === 3 ? '🌟 Perfect!' : s === 2 ? '😊 Great!' : s === 1 ? '👍 Good start!' : '🎯 Not started yet'}
+        </p>
+      `;
+      card.style.borderColor = `var(--${m.color}-light)`;
+      card.addEventListener('click', () => window.location.href = m.href);
+      card.style.cursor = 'pointer';
+      mpWrap.appendChild(card);
+    });
+
+    // ── Badges ──────────────────────────────────────────
+    const ALL_BADGES = [
+      { id:'alpha_master',  icon:'🔤', name:'Alphabet Star',   desc:'Score 8+ on Alphabet Quiz' },
+      { id:'words_master',  icon:'📚', name:'Word Wizard',     desc:'Score 8+ on Words Quiz' },
+      { id:'phrases_star',  icon:'💬', name:'Phrase Pro',      desc:'Score 5+ on Phrases Quiz' },
+      { id:'first_heart',   icon:'💖', name:'First Heart',     desc:'Earn your first heart' },
+      { id:'level_2',       icon:'⭐', name:'Level Up!',       desc:'Reach Level 2' },
+      { id:'level_5',       icon:'🌟', name:'Star Learner',    desc:'Reach Level 5' },
+      { id:'all_alpha',     icon:'🎖️', name:'A to Z Hero',     desc:'Complete all Alphabet groups' },
+      { id:'all_words',     icon:'🏅', name:'Word Explorer',   desc:'Try all word categories' },
+      { id:'all_phrases',   icon:'🎗️', name:'Phrase Master',   desc:'Try all phrase categories' },
+    ];
+
+    // Auto-award some badges based on state
+    if (state.hearts > 0)    App.addBadge('first_heart');
+    if (state.level >= 2)    App.addBadge('level_2');
+    if (state.level >= 5)    App.addBadge('level_5');
+
+    const earned = App.getState().badges;
+    const grid   = document.getElementById('badge-grid');
+
+    ALL_BADGES.forEach(b => {
+      const unlocked = earned.includes(b.id);
+      const el = document.createElement('div');
+      el.className = 'badge-item' + (unlocked ? '' : ' locked');
+      el.innerHTML = `
+        <span class="badge-icon">${b.icon}</span>
+        <div class="badge-name">${b.name}</div>
+        <div class="badge-desc">${b.desc}</div>
+      `;
+      if (unlocked) {
+        el.title = 'Earned! 🎉';
+        el.addEventListener('click', () => App.showToast(`🏅 ${b.name} — ${b.desc}`));
+      }
+      grid.appendChild(el);
+    });
+  </script>
 </body>
 </html>
