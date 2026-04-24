@@ -302,8 +302,8 @@ p  { line-height: 1.6; }
 .bingo-cell.bingo-line { background: linear-gradient(135deg,var(--green),var(--blue)); color: #fff; border-color: var(--green); animation: bingo-celebrate 0.5s ease; }
 
 /* === MULTIPLICATION TABLE === */
-.mult-table { display: grid; grid-template-columns: repeat(10,1fr); gap: 3px; overflow: auto; }
-.mult-cell { aspect-ratio:1; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; border-radius: 6px; min-width: 34px; min-height: 34px; }
+.mult-table { display: grid; grid-template-columns: repeat(10,1fr); gap: 4px; overflow: auto; }
+.mult-cell { aspect-ratio:1; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 800; border-radius: 8px; min-width: 52px; min-height: 52px; }
 .mult-cell.header { background: var(--coral); color: #fff; }
 .mult-cell.result { background: #fff; cursor: pointer; transition: all var(--transition-fast); }
 .mult-cell.result:hover { background: var(--coral-light); transform: scale(1.1); }
