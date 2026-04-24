@@ -50,8 +50,117 @@
     }
     .bingo-call-label { font-size: 0.78rem; font-weight: 700; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.08em; }
     .bingo-call-num   { font-size: 3rem; font-weight: 900; }
-
     .bingo-status { text-align: center; font-weight: 800; color: var(--text-mid); font-size: 0.85rem; margin-top: 8px; }
+
+    /* ══════════════════════════════════════════════
+       LECCIÓN TAB — estilos aislados
+    ══════════════════════════════════════════════ */
+
+    /* Step cards */
+    .ls-step {
+      background: #fff; border-radius: var(--radius-xl); padding: 24px 20px;
+      margin-bottom: 20px; box-shadow: var(--shadow-sm);
+      border: 1.5px solid rgba(0,0,0,0.05);
+      animation: slide-up 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    .ls-badge {
+      display: inline-block; background: var(--coral); color: #fff;
+      font-size: 0.68rem; font-weight: 900; padding: 3px 11px;
+      border-radius: 20px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 9px;
+    }
+    .ls-title { font-size: 1.25rem; font-weight: 900; color: var(--text-dark); margin: 0 0 4px; }
+    .ls-sub   { font-size: 0.85rem; color: var(--text-mid); font-weight: 600; margin: 0 0 18px; }
+
+    /* ── Dot array ── */
+    .ld-grid { display: flex; flex-direction: column; gap: var(--dot-gap, 6px); align-items: center; justify-content: center; min-height: 80px; margin-bottom: 16px; }
+    .ld-row  { display: flex; gap: var(--dot-gap, 6px); }
+    .ld-dot  {
+      width: var(--dot-size, 24px); height: var(--dot-size, 24px); border-radius: 50%;
+      background: linear-gradient(135deg, var(--coral), var(--orange));
+      animation: ld-pop 0.25s cubic-bezier(0.34,1.56,0.64,1) both;
+      box-shadow: 0 2px 6px rgba(255,107,107,0.25);
+    }
+    @keyframes ld-pop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    /* Equation display */
+    .ld-eq-wrap { text-align: center; margin-bottom: 8px; }
+    .ldeq-a, .ldeq-b { font-size: 2.4rem; font-weight: 900; color: var(--coral); }
+    .ldeq-op  { font-size: 2rem; font-weight: 900; color: var(--text-mid); }
+    .ldeq-ans { font-size: 2.4rem; font-weight: 900; color: var(--green-dark); }
+    .ld-addition { text-align: center; font-size: 0.9rem; font-weight: 700; color: var(--text-mid); margin-bottom: 6px; }
+    .ld-desc { text-align: center; font-size: 1rem; font-weight: 800; color: var(--text-dark); }
+
+    /* Slider */
+    .ls-slider-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 18px; font-weight: 700; color: var(--text-mid); }
+    .ls-slider { width: 160px; accent-color: var(--coral); cursor: pointer; }
+    .ls-slider-val { font-size: 1.5rem; font-weight: 900; color: var(--coral); min-width: 28px; text-align: center; }
+
+    /* ── Truco card ── */
+    .lt-card { border: 3px solid; border-radius: var(--radius-xl); overflow: hidden; transition: border-color 0.3s, background 0.3s; }
+    .lt-header {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 20px; color: #fff;
+    }
+    .lt-num   { font-size: 2rem; font-weight: 900; background: rgba(255,255,255,0.25); border-radius: 12px; padding: 4px 14px; }
+    .lt-title { font-size: 1.1rem; font-weight: 900; }
+    .lt-body  { padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+    .lt-tip   { font-size: 0.95rem; font-weight: 600; color: var(--text-dark); line-height: 1.65; margin: 0; }
+    .lt-example {
+      border-left: 4px solid; padding: 10px 14px;
+      background: rgba(0,0,0,0.04); border-radius: 0 10px 10px 0;
+    }
+    .lt-example-label { display: block; font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-mid); margin-bottom: 3px; }
+    .lt-example-text  { font-size: 0.92rem; font-weight: 800; color: var(--text-dark); }
+    .lt-pattern {
+      display: flex; align-items: baseline; gap: 8px;
+      background: rgba(0,0,0,0.04); border-radius: 10px; padding: 10px 14px;
+    }
+    .lt-pattern-label { font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; }
+    .lt-pattern-nums  { font-size: 0.88rem; font-weight: 700; color: var(--text-dark); }
+    .lt-teacher {
+      background: #fffbea; border-radius: 10px; padding: 12px 14px;
+      border: 1.5px dashed #f0c400; font-size: 0.88rem; font-weight: 600;
+      color: var(--text-dark); line-height: 1.6;
+    }
+    .lt-teacher-tag {
+      display: inline-block; background: var(--yellow); color: var(--text-dark);
+      font-size: 0.62rem; font-weight: 900; padding: 2px 8px;
+      border-radius: 20px; text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 5px; margin-right: 6px;
+    }
+
+    /* ── Build the table ── */
+    .lb-grid { display: flex; flex-direction: column; gap: 7px; }
+    .lb-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; border-radius: 12px;
+      background: rgba(0,0,0,0.03); border: 2px solid transparent;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .lb-row.lb-active { background: rgba(255,107,107,0.08); border-color: var(--coral); }
+    .lb-row.lb-done   { background: rgba(107,203,119,0.10); border-color: var(--green); }
+    .lb-row.lb-locked { cursor: default; }
+    .lb-eq   { font-size: 1.05rem; font-weight: 900; color: var(--text-dark); min-width: 58px; }
+    .lb-op   { font-size: 1rem; font-weight: 700; color: var(--text-mid); }
+    .lb-ans  { font-size: 1.1rem; font-weight: 900; }
+    .lb-ans-done   { color: var(--green-dark); }
+    .lb-ans-locked { color: var(--text-light); }
+    .lb-input {
+      width: 66px; font-family: var(--font); font-size: 1.05rem; font-weight: 900;
+      text-align: center; border: 2.5px solid var(--coral); border-radius: 8px;
+      padding: 6px 4px; outline: none; color: var(--text-dark); background: #fff;
+      transition: box-shadow 0.2s;
+    }
+    .lb-input:focus { box-shadow: 0 0 0 3px rgba(255,107,107,0.2); }
+    .lb-check-btn {
+      background: var(--coral); color: #fff; border: none;
+      border-radius: 8px; padding: 7px 14px;
+      font-size: 1rem; font-weight: 900; cursor: pointer;
+      transition: all 0.15s; font-family: var(--font);
+    }
+    .lb-check-btn:hover { background: var(--coral-dark); transform: scale(1.06); }
+    @keyframes lb-shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+    .lb-shake { animation: lb-shake 0.4s; }
   </style>
 </head>
 <body>
@@ -74,9 +183,10 @@
       <!-- Tabs -->
       <div class="tab-bar" role="tablist">
         <button class="tab-btn active" data-tab="tlearn"  role="tab">📖 Aprender</button>
+        <button class="tab-btn"        data-tab="tlesson" role="tab">🎓 Lección</button>
         <button class="tab-btn"        data-tab="tquiz"   role="tab">⚡ Quiz</button>
         <button class="tab-btn"        data-tab="tbingo"  role="tab">🎯 Bingo</button>
-        <button class="tab-btn"        data-tab="tgrid"   role="tab">📊 Tabla completa</button>
+        <button class="tab-btn"        data-tab="tgrid"   role="tab">📊 Tabla</button>
       </div>
 
       <!-- ── TAB: LEARN (flashcards) ────────────────────── -->
@@ -166,11 +276,63 @@
         </p>
       </div>
 
+      <!-- ── TAB: LECCIÓN ──────────────────────────────────── -->
+      <div id="ttab-tlesson" class="tab-content" style="display:none;">
+
+        <!-- PASO 1: ¿Qué es multiplicar? -->
+        <div class="ls-step" style="animation-delay:0ms">
+          <span class="ls-badge">Paso 1</span>
+          <h2 class="ls-title">¿Qué es multiplicar?</h2>
+          <p class="ls-sub">Multiplicar es sumar el mismo número varias veces</p>
+
+          <div id="lesson-dot-grid" class="ld-grid"></div>
+
+          <div class="ld-eq-wrap">
+            <span id="lesson-dot-eq"></span>
+          </div>
+          <p class="ld-addition" id="lesson-dot-add"></p>
+          <p class="ld-desc"    id="lesson-dot-desc"></p>
+
+          <div class="ls-slider-row">
+            <span>Grupos de</span>
+            <input type="range" id="lesson-slider-b" class="ls-slider" min="1" max="10" value="4" />
+            <span id="lesson-slider-val" class="ls-slider-val">4</span>
+          </div>
+        </div>
+
+        <!-- PASO 2: Truco secreto -->
+        <div class="ls-step" style="animation-delay:80ms">
+          <span class="ls-badge" style="background:var(--yellow); color:var(--text-dark)">Paso 2</span>
+          <h2 class="ls-title">¡El truco secreto!</h2>
+          <p class="ls-sub">Cada tabla tiene su propia magia — cambia la tabla arriba para ver el truco</p>
+          <div id="lesson-truco-card" class="lt-card"></div>
+        </div>
+
+        <!-- PASO 3: Construye la tabla -->
+        <div class="ls-step" style="animation-delay:160ms">
+          <span class="ls-badge" style="background:var(--green)">Paso 3</span>
+          <h2 class="ls-title">¡Construye la <span data-lesson-table>Tabla del 3</span>!</h2>
+          <p class="ls-sub">Escribe los resultados uno por uno. ¡Tú puedes!</p>
+
+          <div class="progress-wrap mb-16">
+            <div class="progress-bar" id="lesson-build-prog" style="width:0%"></div>
+          </div>
+
+          <div id="lesson-build-grid" class="lb-grid"></div>
+
+          <div style="text-align:center; margin-top:20px;">
+            <button class="btn btn-primary" id="lb-reset-btn" style="display:none">🔄 Intentar de nuevo</button>
+          </div>
+        </div>
+
+      </div><!-- /ttab-tlesson -->
+
     </div>
   </main>
 
   <script src="../js/app.js"></script>
   <script src="../js/sounds.js"></script>
   <script src="../js/tables.js"></script>
+  <script src="../js/tables-lesson.js"></script>
 </body>
 </html>

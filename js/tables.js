@@ -401,7 +401,7 @@
   }
 
   /* ─── Tab Switching ──────────────────────────────────────── */
-  const TAB_IDS = ['tlearn','tquiz','tbingo','tgrid'];
+  const TAB_IDS = ['tlearn','tlesson','tquiz','tbingo','tgrid'];
 
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -415,6 +415,7 @@
         document.getElementById('ttab-' + id).style.display = (id === tab) ? '' : 'none';
       });
 
+      if (tab === 'tlesson') window.LessonModule && window.LessonModule.init();
       if (tab === 'tquiz')  startQuiz();
       if (tab === 'tbingo') initBingo();
       if (tab === 'tgrid')  renderGrid();
